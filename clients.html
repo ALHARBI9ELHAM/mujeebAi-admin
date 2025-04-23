@@ -2,93 +2,135 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>تفاصيل العميل - مُجيب AI</title>
-  <link rel="stylesheet" href="../../styles/style.css" />
+  <title>قائمة العملاء - مُجيب AI</title>
+  <link rel="stylesheet" href="styles/style.css" />
   <style>
     body {
       background-color: #f4f6fc;
       font-family: 'Tahoma', sans-serif;
       padding: 40px;
-      display: flex;
-      justify-content: center;
     }
-    .client-box {
+    .container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    .clients-box {
       background: white;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      max-width: 1000px;
-      width: 100%;
+      flex: 1;
     }
-    h2 {
-      margin-bottom: 10px;
-      color: #052e74;
-    }
-    .section {
-      margin-bottom: 30px;
-    }
-    .section h3 {
-      margin-bottom: 8px;
-      font-size: 18px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 5px;
-    }
-    .info-item {
-      margin: 5px 0;
+    .client-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 12px;
-      background: #f9f9f9;
-      border-radius: 6px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
     }
-    .info-label {
+    .client-name {
       font-weight: bold;
-      color: #333;
-    }
-    .info-value {
-      color: #555;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    li a {
       color: #052e74;
-      text-decoration: none;
     }
-    li a:hover {
-      text-decoration: underline;
+    .client-status {
+      color: green;
+      font-size: 14px;
+    }
+    .client-date {
+      font-size: 12px;
+      color: gray;
+    }
+    .btns {
+      display: flex;
+      gap: 5px;
+    }
+    .btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-view {
+      background-color: #0d47a1;
+      color: white;
+    }
+    .btn-delete {
+      background-color: #d32f2f;
+      color: white;
+    }
+    .btn-toggle {
+      background-color: #fbc02d;
+      color: black;
+    }
+    .btn-alert {
+      background-color: #388e3c;
+      color: white;
+    }
+    .aside-box {
+      width: 260px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    .aside-box h3 {
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    button.add-client-btn {
+      width: 100%;
+      background-color: #052e74;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <div class="client-box">
-    <h2>👤 عميل تجريبي</h2>
-
-    <div class="section">
-      <h3>📄 البيانات الأساسية</h3>
-      <div class="info-item"><span class="info-label">البريد:</span> <span class="info-value">client@email.com</span></div>
-      <div class="info-item"><span class="info-label">رقم الجوال:</span> <span class="info-value">+966 5XXXXXXX</span></div>
-      <div class="info-item"><span class="info-label">تاريخ الإضافة:</span> <span class="info-value">2025/04/24</span></div>
+  <div class="container">
+    <div class="clients-box">
+      <h2>📋 قائمة العملاء</h2>
+      <div class="client-row">
+        <div>
+          <div class="client-name">عميل تجريبي</div>
+          <div class="client-status">فعال</div>
+          <div class="client-date">2025/04/24</div>
+        </div>
+        <div class="btns">
+          <button class="btn btn-view">👁️ عرض</button>
+          <button class="btn btn-alert">🔔 تنبيه</button>
+          <button class="btn btn-toggle">⏸️ إيقاف</button>
+          <button class="btn btn-delete">🗑️ حذف</button>
+        </div>
+      </div>
+      <div class="client-row">
+        <div>
+          <div class="client-name">س</div>
+          <div class="client-status">فعال</div>
+          <div class="client-date">غير معروف</div>
+        </div>
+        <div class="btns">
+          <button class="btn btn-view">👁️ عرض</button>
+          <button class="btn btn-alert">🔔 تنبيه</button>
+          <button class="btn btn-toggle">⏸️ إيقاف</button>
+          <button class="btn btn-delete">🗑️ حذف</button>
+        </div>
+      </div>
     </div>
 
-    <div class="section">
-      <h3>📂 الملفات</h3>
-      <ul>
-        <li><a href="#">عقد التأسيس.pdf</a></li>
-        <li><a href="#">فاتورة رقم 001.pdf</a></li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h3>📊 التقارير</h3>
-      <div class="info-item"><span class="info-label">الأيام المستخدمة:</span> <span class="info-value">14</span></div>
-      <div class="info-item"><span class="info-label">الأيام المتبقية:</span> <span class="info-value">16</span></div>
-      <div class="info-item"><span class="info-label">آخر تفاعل:</span> <span class="info-value">2025/04/23</span></div>
-    </div>
-
-    <div class="section">
-      <h3>🏷️ التصنيفات</h3>
-      <div class="info-item"><span class="info-value">عميل نشط، باقة احترافية، يستخدم الرد الآلي</span></div>
+    <div class="aside-box">
+      <h3>➕ إضافة عميل جديد</h3>
+      <input type="text" placeholder="اسم العميل" />
+      <button class="add-client-btn">إضافة</button>
     </div>
   </div>
 </body>
