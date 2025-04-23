@@ -2,25 +2,64 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>قائمة العملاء</title>
+  <title>قائمة العملاء - مُجيب AI</title>
   <link rel="stylesheet" href="styles/style.css" />
   <style>
     body {
       background-color: #f4f6fc;
-      font-family: 'Tahoma', sans-serif;
+      font-family: Tahoma, sans-serif;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      margin: 0;
+      color: #052e74;
+    }
+    .header span {
+      font-size: 16px;
+      color: #555;
+    }
+    .add-client-form {
+      margin-bottom: 20px;
+      background: white;
       padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .add-client-form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .add-client-form button {
+      background-color: #052e74;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
     }
     table {
-      width: 75%;
+      width: 100%;
       background: white;
       border-collapse: collapse;
-      margin: 0 auto;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
       border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     th, td {
-      padding: 15px;
+      padding: 14px;
       text-align: center;
       border-bottom: 1px solid #eee;
     }
@@ -28,75 +67,64 @@
       background-color: #052e74;
       color: white;
     }
-    button {
-      background-color: #052e74;
-      color: white;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 8px;
+    .status-active {
+      color: green;
+      font-weight: bold;
+    }
+    .status-inactive {
+      color: gray;
+      font-weight: bold;
+    }
+    .btn-action {
+      padding: 6px 12px;
+      border-radius: 6px;
       cursor: pointer;
+      border: none;
     }
-    .add-client {
-      position: fixed;
-      right: 40px;
-      top: 100px;
-      background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    .btn-view {
+      background-color: #0284c7;
+      color: white;
     }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
+    .btn-delete {
+      background-color: #dc2626;
+      color: white;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h2>📋 قائمة العملاء</h2>
+      <span id="clientCount">العدد: 0</span>
+    </div>
 
-  <div class="add-client">
-    <h3>📝 إضافة عميل جديد</h3>
-    <input type="text" id="clientName" placeholder="اسم العميل" />
-    <button onclick="addClient()">إضافة</button>
+    <div class="add-client-form">
+      <input type="text" id="newClientName" placeholder="اسم العميل">
+      <button onclick="addClient()">➕ إضافة عميل</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>اسم العميل</th>
+          <th>الحالة</th>
+          <th>تاريخ الإضافة</th>
+          <th>الخيارات</th>
+        </tr>
+      </thead>
+      <tbody id="clientTableBody"></tbody>
+    </table>
   </div>
 
-  <table id="clientTable">
-    <thead>
-      <tr>
-        <th>اسم العميل</th>
-        <th>الحالة</th>
-        <th>تاريخ الإضافة</th>
-        <th>عرض</th>
-      </tr>
-    </thead>
-    <tbody id="clientList"></tbody>
-  </table>
-
   <script>
-    const clients = JSON.parse(localStorage.getItem("clients")) || [];
-
-    function renderClients() {
-      const tbody = document.getElementById("clientList");
-      tbody.innerHTML = "";
-
-      clients.forEach((client, index) => {
-        const folderName = `clients/client-${String(index + 1).padStart(3, '0')}`;
-        tbody.innerHTML += `
-          <tr>
-            <td>${client.name}</td>
-            <td>${client.status}</td>
-            <td>${client.date}</td>
-            <td><a href="${folderName}/index.html"><button>👁 عرض</button></a></td>
-          </tr>
-        `;
-      });
-    }
+    let clients = JSON.parse(localStorage.getItem("clients")) || [];
 
     function addClient() {
-      const name = document.getElementById("clientName").value.trim();
-      if (!name) return alert("أدخل اسم العميل");
+      const name = document.getElementById("newClientName").value.trim();
+      if (!name) return alert("يرجى إدخال اسم العميل");
 
       const newClient = {
+        id: "client-" + String(clients.length + 1).padStart(3, '0'),
         name,
         status: "فعال",
         date: new Date().toLocaleDateString("ar-EG")
@@ -104,8 +132,39 @@
 
       clients.push(newClient);
       localStorage.setItem("clients", JSON.stringify(clients));
+      document.getElementById("newClientName").value = "";
       renderClients();
-      document.getElementById("clientName").value = "";
+    }
+
+    function deleteClient(index) {
+      const confirmDelete = confirm("هل أنت متأكد من حذف هذا العميل؟");
+      if (!confirmDelete) return;
+
+      clients.splice(index, 1);
+      localStorage.setItem("clients", JSON.stringify(clients));
+      renderClients();
+    }
+
+    function renderClients() {
+      const tbody = document.getElementById("clientTableBody");
+      tbody.innerHTML = "";
+      document.getElementById("clientCount").textContent = `العدد: ${clients.length}`;
+
+      clients.forEach((client, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${client.name}</td>
+          <td class="${client.status === 'فعال' ? 'status-active' : 'status-inactive'}">${client.status}</td>
+          <td>${client.date}</td>
+          <td>
+            <a href="clients/${client.id}/index.html" target="_blank">
+              <button class="btn-action btn-view">👁 عرض</button>
+            </a>
+            <button class="btn-action btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     renderClients();
