@@ -1,20 +1,125 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>إدارة العملاء - مُجيب AI</title>
-  <link rel="stylesheet" href="styles/style.css" />
+  <meta charset="UTF-8">
+  <title>قائمة العملاء - مُجيب AI</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <style>
+    body {
+      background-color: #f4f6fc;
+      font-family: Tahoma, sans-serif;
+      padding: 40px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .client-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+    th {
+      background-color: #052e74;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f5ff;
+    }
+    .btn {
+      background-color: #052e74;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>قائمة العملاء</h2>
-    <ul id="client-list">
-      <li>عميل 1 - كافيه المساء</li>
-      <li>عميل 2 - متجر رقمي</li>
-      <li>عميل 3 - مكتب قانوني</li>
-    </ul>
-    <br />
-    <button onclick="alert('قريبًا: إضافة عميل جديد!')">➕ إضافة عميل</button>
+  <h2>📋 قائمة العملاء</h2>
+
+  <div class="top-actions">
+    <button class="btn" onclick="addDummyClient()">➕ إضافة عميل وهمي</button>
   </div>
+
+  <table class="client-table" id="clientsTable">
+    <thead>
+      <tr>
+        <th>اسم العميل</th>
+        <th>الحالة</th>
+        <th>تاريخ الإضافة</th>
+        <th>عرض</th>
+      </tr>
+    </thead>
+    <tbody id="clientsBody">
+      <!-- يتم تعبئتها تلقائيًا -->
+    </tbody>
+  </table>
+
+  <script>
+    function getClients() {
+      return JSON.parse(localStorage.getItem('clients')) || [];
+    }
+
+    function saveClients(clients) {
+      localStorage.setItem('clients', JSON.stringify(clients));
+    }
+
+    function renderClients() {
+      const clients = getClients();
+      const tbody = document.getElementById("clientsBody");
+      tbody.innerHTML = "";
+
+      if (clients.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4'>لا يوجد عملاء بعد.</td></tr>";
+        return;
+      }
+
+      clients.forEach((client, index) => {
+        const row = `
+          <tr>
+            <td>${client.name}</td>
+            <td>${client.status}</td>
+            <td>${client.createdAt}</td>
+            <td><button class="btn" onclick="viewClient(${index})">👁 عرض</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function addDummyClient() {
+      const clients = getClients();
+      const newClient = {
+        name: "عميل تجريبي " + (clients.length + 1),
+        status: "فعّال",
+        createdAt: new Date().toLocaleDateString()
+      };
+      clients.push(newClient);
+      saveClients(clients);
+      renderClients();
+    }
+
+    function viewClient(index) {
+      alert("عرض تفاصيل العميل رقم " + (index + 1));
+      // لاحقًا نحول المستخدم إلى صفحة التفاصيل الخاصة بالعميل
+    }
+
+    renderClients();
+  </script>
 </body>
 </html>
