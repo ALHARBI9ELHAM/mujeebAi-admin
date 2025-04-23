@@ -1,0 +1,32 @@
+body {
+  font-family: Tahoma, sans-serif;
+  background: #f4f6fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.login-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+button {
+  width: 100%;
+  background: #0a2e70;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+}
