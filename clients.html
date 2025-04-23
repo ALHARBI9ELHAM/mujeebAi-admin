@@ -2,61 +2,68 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>قائمة العملاء - مُجيب AI</title>
+  <title>قائمة العملاء</title>
   <link rel="stylesheet" href="styles/style.css">
   <style>
     body {
-      background-color: #f4f6fc;
-      font-family: Tahoma, sans-serif;
-      padding: 40px;
+      background: #f4f6fc;
+      font-family: Tahoma;
+      padding: 20px;
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .client-table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
+    .add-client-form {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
       border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
     }
-    th, td {
-      padding: 14px;
-      border-bottom: 1px solid #eee;
-      text-align: center;
+    .add-client-form input, .add-client-form button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
-    th {
-      background-color: #052e74;
-      color: white;
-    }
-    tr:hover {
-      background-color: #f1f5ff;
-    }
-    .btn {
+    .add-client-form button {
       background-color: #052e74;
       color: white;
       border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
       cursor: pointer;
     }
-    .top-actions {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    }
+    table th, table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    table th {
+      background-color: #052e74;
+      color: white;
+    }
+    a {
+      text-decoration: none;
+      color: #052e74;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>📋 قائمة العملاء</h2>
 
-  <div class="top-actions">
-    <button class="btn" onclick="addDummyClient()">➕ إضافة عميل وهمي</button>
+  <div class="add-client-form">
+    <h3>إضافة عميل جديد</h3>
+    <input type="text" id="newClientName" placeholder="اسم العميل">
+    <button onclick="addClient()">إضافة</button>
   </div>
 
-  <table class="client-table" id="clientsTable">
+  <table id="clientTable">
     <thead>
       <tr>
         <th>اسم العميل</th>
@@ -65,58 +72,43 @@
         <th>عرض</th>
       </tr>
     </thead>
-    <tbody id="clientsBody">
-      <!-- يتم تعبئتها تلقائيًا -->
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <script>
-    function getClients() {
-      return JSON.parse(localStorage.getItem('clients')) || [];
-    }
+    const clients = JSON.parse(localStorage.getItem("clients")) || [];
 
-    function saveClients(clients) {
-      localStorage.setItem('clients', JSON.stringify(clients));
-    }
+    function addClient() {
+      const name = document.getElementById("newClientName").value.trim();
+      if (!name) return alert("ادخل اسم العميل");
 
-    function renderClients() {
-      const clients = getClients();
-      const tbody = document.getElementById("clientsBody");
-      tbody.innerHTML = "";
-
-      if (clients.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='4'>لا يوجد عملاء بعد.</td></tr>";
-        return;
-      }
-
-      clients.forEach((client, index) => {
-        const row = `
-          <tr>
-            <td>${client.name}</td>
-            <td>${client.status}</td>
-            <td>${client.createdAt}</td>
-            <td><button class="btn" onclick="viewClient(${index})">👁 عرض</button></td>
-          </tr>
-        `;
-        tbody.innerHTML += row;
-      });
-    }
-
-    function addDummyClient() {
-      const clients = getClients();
+      const id = "client-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
+      const date = new Date().toLocaleDateString("ar-EG");
       const newClient = {
-        name: "عميل تجريبي " + (clients.length + 1),
-        status: "فعّال",
-        createdAt: new Date().toLocaleDateString()
+        id,
+        name,
+        status: "فعال",
+        createdAt: date
       };
+
       clients.push(newClient);
-      saveClients(clients);
+      localStorage.setItem("clients", JSON.stringify(clients));
       renderClients();
     }
 
-    function viewClient(index) {
-      alert("عرض تفاصيل العميل رقم " + (index + 1));
-      // لاحقًا نحول المستخدم إلى صفحة التفاصيل الخاصة بالعميل
+    function renderClients() {
+      const tbody = document.querySelector("#clientTable tbody");
+      tbody.innerHTML = "";
+      clients.forEach(client => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${client.name}</td>
+          <td>${client.status}</td>
+          <td>${client.createdAt}</td>
+          <td><a href="clients/${client.id}/index.html">عرض</a></td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     renderClients();
