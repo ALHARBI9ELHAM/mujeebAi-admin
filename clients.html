@@ -2,172 +2,94 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>قائمة العملاء - مُجيب AI</title>
-  <link rel="stylesheet" href="styles/style.css" />
+  <title>تفاصيل العميل - مُجيب AI</title>
+  <link rel="stylesheet" href="../../styles/style.css" />
   <style>
     body {
       background-color: #f4f6fc;
-      font-family: Tahoma, sans-serif;
-      padding: 30px;
-    }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-    }
-    .header {
+      font-family: 'Tahoma', sans-serif;
+      padding: 40px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      justify-content: center;
     }
-    .header h2 {
-      margin: 0;
+    .client-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      max-width: 1000px;
+      width: 100%;
+    }
+    h2 {
+      margin-bottom: 10px;
       color: #052e74;
     }
-    .header span {
-      font-size: 16px;
+    .section {
+      margin-bottom: 30px;
+    }
+    .section h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .info-item {
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #333;
+    }
+    .info-value {
       color: #555;
     }
-    .add-client-form {
-      margin-bottom: 20px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    ul {
+      padding-left: 20px;
     }
-    .add-client-form input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    li a {
+      color: #052e74;
+      text-decoration: none;
     }
-    .add-client-form button {
-      background-color: #052e74;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    table {
-      width: 100%;
-      background: white;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-    th, td {
-      padding: 14px;
-      text-align: center;
-      border-bottom: 1px solid #eee;
-    }
-    th {
-      background-color: #052e74;
-      color: white;
-    }
-    .status-active {
-      color: green;
-      font-weight: bold;
-    }
-    .status-inactive {
-      color: gray;
-      font-weight: bold;
-    }
-    .btn-action {
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-view {
-      background-color: #0284c7;
-      color: white;
-    }
-    .btn-delete {
-      background-color: #dc2626;
-      color: white;
+    li a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h2>📋 قائمة العملاء</h2>
-      <span id="clientCount">العدد: 0</span>
+  <div class="client-box">
+    <h2>👤 عميل تجريبي</h2>
+
+    <div class="section">
+      <h3>📄 البيانات الأساسية</h3>
+      <div class="info-item"><span class="info-label">البريد:</span> <span class="info-value">client@email.com</span></div>
+      <div class="info-item"><span class="info-label">رقم الجوال:</span> <span class="info-value">+966 5XXXXXXX</span></div>
+      <div class="info-item"><span class="info-label">تاريخ الإضافة:</span> <span class="info-value">2025/04/24</span></div>
     </div>
 
-    <div class="add-client-form">
-      <input type="text" id="newClientName" placeholder="اسم العميل">
-      <button onclick="addClient()">➕ إضافة عميل</button>
+    <div class="section">
+      <h3>📂 الملفات</h3>
+      <ul>
+        <li><a href="#">عقد التأسيس.pdf</a></li>
+        <li><a href="#">فاتورة رقم 001.pdf</a></li>
+      </ul>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>اسم العميل</th>
-          <th>الحالة</th>
-          <th>تاريخ الإضافة</th>
-          <th>الخيارات</th>
-        </tr>
-      </thead>
-      <tbody id="clientTableBody"></tbody>
-    </table>
+    <div class="section">
+      <h3>📊 التقارير</h3>
+      <div class="info-item"><span class="info-label">الأيام المستخدمة:</span> <span class="info-value">14</span></div>
+      <div class="info-item"><span class="info-label">الأيام المتبقية:</span> <span class="info-value">16</span></div>
+      <div class="info-item"><span class="info-label">آخر تفاعل:</span> <span class="info-value">2025/04/23</span></div>
+    </div>
+
+    <div class="section">
+      <h3>🏷️ التصنيفات</h3>
+      <div class="info-item"><span class="info-value">عميل نشط، باقة احترافية، يستخدم الرد الآلي</span></div>
+    </div>
   </div>
-
-  <script>
-    let clients = JSON.parse(localStorage.getItem("clients")) || [];
-
-    function addClient() {
-      const name = document.getElementById("newClientName").value.trim();
-      if (!name) return alert("يرجى إدخال اسم العميل");
-
-      const newClient = {
-        id: "client-" + String(clients.length + 1).padStart(3, '0'),
-        name,
-        status: "فعال",
-        date: new Date().toLocaleDateString("ar-EG")
-      };
-
-      clients.push(newClient);
-      localStorage.setItem("clients", JSON.stringify(clients));
-      document.getElementById("newClientName").value = "";
-      renderClients();
-    }
-
-    function deleteClient(index) {
-      const confirmDelete = confirm("هل أنت متأكد من حذف هذا العميل؟");
-      if (!confirmDelete) return;
-
-      clients.splice(index, 1);
-      localStorage.setItem("clients", JSON.stringify(clients));
-      renderClients();
-    }
-
-    function renderClients() {
-      const tbody = document.getElementById("clientTableBody");
-      tbody.innerHTML = "";
-      document.getElementById("clientCount").textContent = `العدد: ${clients.length}`;
-
-      clients.forEach((client, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${client.name}</td>
-          <td class="${client.status === 'فعال' ? 'status-active' : 'status-inactive'}">${client.status}</td>
-          <td>${client.date}</td>
-          <td>
-            <a href="clients/${client.id}/index.html" target="_blank">
-              <button class="btn-action btn-view">👁 عرض</button>
-            </a>
-            <button class="btn-action btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    renderClients();
-  </script>
 </body>
 </html>
