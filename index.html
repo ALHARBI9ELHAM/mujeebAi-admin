@@ -50,11 +50,16 @@
   </div>
 
   <script>
+    // بيانات المستخدمين بشكل مؤقت (بمكان قاعدة بيانات)
+    const users = [
+      { username: "admin", password: "mujeeb123" },
+      { username: "abdulrahman", password: "123456" }
+    ];
+
     function login() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      const users = JSON.parse(localStorage.getItem("users")) || [];
       const match = users.find(user => user.username === username && user.password === password);
 
       if (match) {
@@ -65,6 +70,7 @@
       }
     }
 
+    // إذا مسجّل دخول، ينقله مباشرة للداشبورد
     if (localStorage.getItem("loggedIn") === "true") {
       window.location.href = "dashboard.html";
     }
