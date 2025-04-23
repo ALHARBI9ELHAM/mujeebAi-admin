@@ -32,7 +32,8 @@
       margin: 15px 0;
       font-weight: bold;
     }
-    .sidebar a:hover {
+    .sidebar a:hover,
+    .sidebar a.active {
       text-decoration: underline;
     }
     .main {
@@ -85,7 +86,7 @@
 <body>
   <div class="sidebar">
     <h2>💼 مُجيب AI</h2>
-    <a href="dashboard.html">📊 لوحة التحكم</a>
+    <a href="dashboard.html" class="active">📊 لوحة التحكم</a>
     <a href="clients.html">👥 إدارة العملاء</a>
     <a href="tickets.html">🎫 التذاكر</a>
     <a href="content.html">🖋 تحكم المحتوى</a>
@@ -98,11 +99,11 @@
     <div class="cards">
       <div class="card">
         <h3>عدد العملاء الكلي</h3>
-        <p>125</p>
+        <p id="totalClients">0</p>
       </div>
       <div class="card">
         <h3>العملاء الفعّالين</h3>
-        <p>87</p>
+        <p id="activeClients">0</p>
       </div>
       <div class="card">
         <h3>عدد التذاكر</h3>
@@ -126,12 +127,20 @@
       window.location.href = "index.html";
     }
 
+    const clients = JSON.parse(localStorage.getItem("clients")) || [];
+    const activeCount = clients.filter(c => c.status === "فعال").length;
+    const totalCount = clients.length;
+    const inactiveCount = totalCount - activeCount;
+
+    document.getElementById("totalClients").textContent = totalCount;
+    document.getElementById("activeClients").textContent = activeCount;
+
     new Chart(document.getElementById('pieChart'), {
       type: 'pie',
       data: {
         labels: ['فعّالين', 'غير فعّالين'],
         datasets: [{
-          data: [87, 38],
+          data: [activeCount, inactiveCount],
           backgroundColor: ['#052e74', '#ccc']
         }]
       },
