@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>لوحة التحكم - مُجيب AI</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <style>
+      body {
+        background-color: #f4f6fc;
+        font-family: 'Tahoma', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .dashboard-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #052e74;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+      }
+      a {
+        text-decoration: none;
+        color: white;
+      }
+    </style>
+    <script>
+      if (localStorage.getItem("loggedIn") !== "true") {
+        window.location.href = "index.html";
+      }
+    </script>
+  </head>
+  <body>
+    <div class="dashboard-box">
+      <h2>لوحة التحكم الإدارية</h2>
+      <p>مرحبًا عبدالرحمن 👋</p>
+      <a href="clients.html"><button>إدارة العملاء</button></a><br /><br />
+      <a href="content.html"><button>تحكم في الصفحة الرئيسية</button></a><br /><br />
+      <a href="tickets.html"><button>عرض التذاكر</button></a><br /><br />
+      <button onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <script>
+      function logout() {
+        localStorage.removeItem("loggedIn");
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>
