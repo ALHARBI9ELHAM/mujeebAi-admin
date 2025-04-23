@@ -1,65 +1,62 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>قائمة العملاء</title>
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/style.css" />
   <style>
     body {
-      background: #f4f6fc;
-      font-family: Tahoma;
+      background-color: #f4f6fc;
+      font-family: 'Tahoma', sans-serif;
       padding: 20px;
-    }
-    .add-client-form {
-      background: white;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
-    .add-client-form input, .add-client-form button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .add-client-form button {
-      background-color: #052e74;
-      color: white;
-      border: none;
-      cursor: pointer;
     }
     table {
-      width: 100%;
+      width: 75%;
       background: white;
       border-collapse: collapse;
+      margin: 0 auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.05);
     }
-    table th, table td {
-      padding: 12px;
+    th, td {
+      padding: 15px;
       text-align: center;
       border-bottom: 1px solid #eee;
     }
-    table th {
+    th {
       background-color: #052e74;
       color: white;
     }
-    a {
-      text-decoration: none;
-      color: #052e74;
-      font-weight: bold;
+    button {
+      background-color: #052e74;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .add-client {
+      position: fixed;
+      right: 40px;
+      top: 100px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="add-client-form">
-    <h3>إضافة عميل جديد</h3>
-    <input type="text" id="newClientName" placeholder="اسم العميل">
+  <div class="add-client">
+    <h3>📝 إضافة عميل جديد</h3>
+    <input type="text" id="clientName" placeholder="اسم العميل" />
     <button onclick="addClient()">إضافة</button>
   </div>
 
@@ -72,43 +69,43 @@
         <th>عرض</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="clientList"></tbody>
   </table>
 
   <script>
     const clients = JSON.parse(localStorage.getItem("clients")) || [];
 
-    function addClient() {
-      const name = document.getElementById("newClientName").value.trim();
-      if (!name) return alert("ادخل اسم العميل");
+    function renderClients() {
+      const tbody = document.getElementById("clientList");
+      tbody.innerHTML = "";
 
-      const id = "client-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
-      const date = new Date().toLocaleDateString("ar-EG");
+      clients.forEach((client, index) => {
+        const folderName = `clients/client-${String(index + 1).padStart(3, '0')}`;
+        tbody.innerHTML += `
+          <tr>
+            <td>${client.name}</td>
+            <td>${client.status}</td>
+            <td>${client.date}</td>
+            <td><a href="${folderName}/index.html"><button>👁 عرض</button></a></td>
+          </tr>
+        `;
+      });
+    }
+
+    function addClient() {
+      const name = document.getElementById("clientName").value.trim();
+      if (!name) return alert("أدخل اسم العميل");
+
       const newClient = {
-        id,
         name,
         status: "فعال",
-        createdAt: date
+        date: new Date().toLocaleDateString("ar-EG")
       };
 
       clients.push(newClient);
       localStorage.setItem("clients", JSON.stringify(clients));
       renderClients();
-    }
-
-    function renderClients() {
-      const tbody = document.querySelector("#clientTable tbody");
-      tbody.innerHTML = "";
-      clients.forEach(client => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${client.name}</td>
-          <td>${client.status}</td>
-          <td>${client.createdAt}</td>
-          <td><a href="clients/${client.id}/index.html">عرض</a></td>
-        `;
-        tbody.appendChild(tr);
-      });
+      document.getElementById("clientName").value = "";
     }
 
     renderClients();
