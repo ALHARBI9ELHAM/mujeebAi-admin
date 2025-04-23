@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>تفاصيل العميل</title>
+  <title>تفاصيل العميل - مُجيب AI</title>
   <link rel="stylesheet" href="../../styles/style.css" />
   <style>
     body {
@@ -15,7 +15,7 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
     }
     h2 {
@@ -23,7 +23,7 @@
       color: #052e74;
     }
     .section {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
     .section h3 {
       margin-bottom: 8px;
@@ -34,49 +34,46 @@
     .info-item {
       margin: 5px 0;
     }
+    .info-label {
+      font-weight: bold;
+      color: #333;
+    }
+    .info-value {
+      margin-right: 10px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <div class="client-box">
-    <h2>تفاصيل عميل: <span id="clientName">جار التحميل...</span></h2>
+    <h2>👤 عميل تجريبي</h2>
 
     <div class="section">
-      <h3>البيانات الأساسية</h3>
-      <p class="info-item">تاريخ الإضافة: <span id="addedDate">---</span></p>
-      <p class="info-item">الحالة: <span id="status">---</span></p>
+      <h3>📄 البيانات الأساسية</h3>
+      <div class="info-item"><span class="info-label">البريد:</span> <span class="info-value">client@email.com</span></div>
+      <div class="info-item"><span class="info-label">رقم الجوال:</span> <span class="info-value">+966 5XXXXXXX</span></div>
+      <div class="info-item"><span class="info-label">تاريخ الإضافة:</span> <span class="info-value">2025/04/24</span></div>
     </div>
 
     <div class="section">
-      <h3>التقارير</h3>
-      <p class="info-item">الأيام المستخدمة: <span id="usedDays">---</span></p>
-      <p class="info-item">الأيام المتبقية: <span id="remainingDays">---</span></p>
-    </div>
-
-    <div class="section">
-      <h3>مستندات العميل</h3>
-      <ul id="documents">
-        <li>لا توجد مستندات حتى الآن.</li>
+      <h3>📂 الملفات</h3>
+      <ul>
+        <li><a href="#">عقد التأسيس.pdf</a></li>
+        <li><a href="#">فاتورة رقم 001.pdf</a></li>
       </ul>
     </div>
+
+    <div class="section">
+      <h3>📊 التقارير</h3>
+      <div class="info-item"><span class="info-label">الأيام المستخدمة:</span> <span class="info-value">14</span></div>
+      <div class="info-item"><span class="info-label">الأيام المتبقية:</span> <span class="info-value">16</span></div>
+      <div class="info-item"><span class="info-label">آخر تفاعل:</span> <span class="info-value">2025/04/23</span></div>
+    </div>
+
+    <div class="section">
+      <h3>🏷️ التصنيفات</h3>
+      <div class="info-item">عميل نشط، باقة احترافية، يستخدم الرد الآلي</div>
+    </div>
   </div>
-
-  <script>
-    // مؤقتًا: اسم العميل يؤخذ من اسم المجلد في الرابط
-    const parts = window.location.pathname.split("/");
-    const clientFolder = parts[parts.length - 2];
-    const name = decodeURIComponent(clientFolder.replace("client-", "عميل تجريبي "));
-    document.getElementById("clientName").textContent = name;
-
-    // مثال تعبئة بيانات وهمية
-    document.getElementById("addedDate").textContent = "2025/04/24";
-    document.getElementById("status").textContent = "فعّال";
-    document.getElementById("usedDays").textContent = "12 يوم";
-    document.getElementById("remainingDays").textContent = "18 يوم";
-    document.getElementById("documents").innerHTML = `
-      <li><a href="#">عقد الخدمة.pdf</a></li>
-      <li><a href="#">نموذج الموافقة.docx</a></li>
-    `;
-  </script>
 </body>
 </html>
-
