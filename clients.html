@@ -2,136 +2,155 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>قائمة العملاء - مُجيب AI</title>
+  <title>قائمة العملاء</title>
   <link rel="stylesheet" href="styles/style.css" />
   <style>
     body {
       background-color: #f4f6fc;
-      font-family: 'Tahoma', sans-serif;
+      font-family: Tahoma;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
       padding: 40px;
     }
-    .container {
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
-    .clients-box {
+
+    .add-box, .list-box {
       background: white;
-      padding: 30px;
+      padding: 25px;
       border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .add-box {
+      width: 280px;
+    }
+
+    .list-box {
       flex: 1;
     }
-    .client-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
+
+    h2 {
+      margin-bottom: 20px;
     }
-    .client-name {
-      font-weight: bold;
-      color: #052e74;
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      text-align: right;
     }
-    .client-status {
-      color: green;
-      font-size: 14px;
-    }
-    .client-date {
-      font-size: 12px;
-      color: gray;
-    }
-    .btns {
-      display: flex;
-      gap: 5px;
-    }
-    .btn {
-      padding: 5px 10px;
-      font-size: 12px;
+
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      border: none;
       border-radius: 6px;
       cursor: pointer;
-      border: none;
     }
-    .btn-view {
-      background-color: #0d47a1;
-      color: white;
+
+    .btn-view { background: #052e74; color: white; }
+    .btn-delete { background: #e74c3c; color: white; }
+    .btn-toggle { background: #27ae60; color: white; }
+    .btn-remind { background: #f1c40f; color: white; }
+
+    .client-item {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
     }
-    .btn-delete {
-      background-color: #d32f2f;
-      color: white;
+
+    .client-name {
+      font-weight: bold;
+      font-size: 18px;
     }
-    .btn-toggle {
-      background-color: #fbc02d;
-      color: black;
-    }
-    .btn-alert {
-      background-color: #388e3c;
-      color: white;
-    }
-    .aside-box {
-      width: 260px;
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    }
-    .aside-box h3 {
-      margin-bottom: 10px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    button.add-client-btn {
-      width: 100%;
-      background-color: #052e74;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
+
+    .client-date, .client-status {
+      font-size: 14px;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="clients-box">
-      <h2>📋 قائمة العملاء</h2>
-      <div class="client-row">
-        <div>
-          <div class="client-name">عميل تجريبي</div>
-          <div class="client-status">فعال</div>
-          <div class="client-date">2025/04/24</div>
-        </div>
-        <div class="btns">
-          <button class="btn btn-view">👁️ عرض</button>
-          <button class="btn btn-alert">🔔 تنبيه</button>
-          <button class="btn btn-toggle">⏸️ إيقاف</button>
-          <button class="btn btn-delete">🗑️ حذف</button>
-        </div>
-      </div>
-      <div class="client-row">
-        <div>
-          <div class="client-name">س</div>
-          <div class="client-status">فعال</div>
-          <div class="client-date">غير معروف</div>
-        </div>
-        <div class="btns">
-          <button class="btn btn-view">👁️ عرض</button>
-          <button class="btn btn-alert">🔔 تنبيه</button>
-          <button class="btn btn-toggle">⏸️ إيقاف</button>
-          <button class="btn btn-delete">🗑️ حذف</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="aside-box">
-      <h3>➕ إضافة عميل جديد</h3>
-      <input type="text" placeholder="اسم العميل" />
-      <button class="add-client-btn">إضافة</button>
-    </div>
+  <div class="add-box">
+    <h2>➕ إضافة عميل جديد</h2>
+    <input type="text" id="clientName" placeholder="اسم العميل" />
+    <button onclick="addClient()" style="width: 100%; background-color:#052e74; color:white;">إضافة</button>
   </div>
+
+  <div class="list-box">
+    <h2>📋 قائمة العملاء</h2>
+    <div id="clientList"></div>
+  </div>
+
+  <script>
+    function loadClients() {
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      const container = document.getElementById("clientList");
+      container.innerHTML = "";
+
+      clients.forEach((client, index) => {
+        const div = document.createElement("div");
+        div.className = "client-item";
+        div.innerHTML = `
+          <div class="client-name">${client.name}</div>
+          <div class="client-date">📅 ${client.date}</div>
+          <div class="client-status">الحالة: <span style="color:${client.active ? 'green' : 'red'}">${client.active ? 'فعال' : 'غير فعال'}</span></div>
+          <button class="btn-view" onclick="viewClient(${index})">👁 عرض</button>
+          <button class="btn-toggle" onclick="toggleStatus(${index})">${client.active ? "إيقاف" : "تفعيل"}</button>
+          <button class="btn-remind" onclick="sendReminder(${index})">⚠️ تنبيه</button>
+          <button class="btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addClient() {
+      const name = document.getElementById("clientName").value.trim();
+      if (!name) return alert("اكتب اسم العميل");
+
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      const id = "client-" + (Date.now());
+      const newClient = {
+        id,
+        name,
+        active: true,
+        date: new Date().toISOString().split("T")[0],
+      };
+      clients.push(newClient);
+      localStorage.setItem("clients", JSON.stringify(clients));
+      location.reload();
+    }
+
+    function deleteClient(index) {
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      if (confirm(`هل أنت متأكد من حذف العميل ${clients[index].name}؟`)) {
+        clients.splice(index, 1);
+        localStorage.setItem("clients", JSON.stringify(clients));
+        loadClients();
+      }
+    }
+
+    function toggleStatus(index) {
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      clients[index].active = !clients[index].active;
+      localStorage.setItem("clients", JSON.stringify(clients));
+      loadClients();
+    }
+
+    function sendReminder(index) {
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      alert(`🚨 تم إرسال تنبيه للعميل: ${clients[index].name}`);
+    }
+
+    function viewClient(index) {
+      const clients = JSON.parse(localStorage.getItem("clients")) || [];
+      const id = clients[index].id;
+      window.location.href = `clients/${id}/index.html`;
+    }
+
+    loadClients();
+  </script>
 </body>
 </html>
