@@ -123,6 +123,7 @@
 </head>
 <body>
   <button class="menu-toggle" onclick="toggleSidebar()">≡ القائمة</button>
+  
   <div class="sidebar" id="sidebar">
     <h2>💼 مُجيب AI</h2>
     <a href="dashboard.html" class="active">📊 لوحة التحكم</a>
@@ -171,7 +172,7 @@
 
     function logout() {
       localStorage.removeItem("loggedIn");
-      window.location.href = "index.html";
+      window.location.href = "login.html"; // ✅ تم تعديل الخروج يوديك على login.html
     }
 
     const clients = JSON.parse(localStorage.getItem("clients")) || [];
