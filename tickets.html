@@ -188,10 +188,11 @@
 
     function addTicket() {
       const clientId = parseInt(document.getElementById("clientSelect").value);
-      const message = document.getElementById("ticketMessage").value.trim();
+      const messageInput = document.getElementById("ticketMessage");
+      const message = messageInput.value;
       const status = document.getElementById("ticketStatus").value;
 
-      if (!message || isNaN(clientId)) {
+      if (message.length < 1 || isNaN(clientId)) {
         alert("يرجى كتابة الرسالة واختيار عميل.");
         return;
       }
