@@ -55,6 +55,14 @@
       border: 1px solid #ccc;
       font-size: 15px;
     }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #052e74;
+    }
   </style>
 </head>
 <body>
@@ -66,6 +74,8 @@
   <select id="clientSelect"></select>
   <input type="text" id="ticketMessage" placeholder="اكتب محتوى التذكرة..." />
   <button class="add-ticket" onclick="addTicket()">إضافة تذكرة</button>
+
+  <a class="back-link" href="dashboard.html">⬅️ الرجوع إلى لوحة التحكم</a>
 
   <div class="note" id="note"></div>
 
@@ -108,10 +118,12 @@
 
     function addTicket() {
       const clientId = parseInt(document.getElementById("clientSelect").value);
-      const message = document.getElementById("ticketMessage").value.trim();
+      const messageInput = document.getElementById("ticketMessage");
+      const message = messageInput.value.trim();
 
       if (!message || isNaN(clientId)) {
         alert("يرجى كتابة الرسالة واختيار عميل.");
+        messageInput.focus();
         return;
       }
 
@@ -123,7 +135,7 @@
 
       tickets.push(newTicket);
       localStorage.setItem("tickets", JSON.stringify(tickets));
-      document.getElementById("ticketMessage").value = "";
+      messageInput.value = "";
       renderTickets();
     }
 
