@@ -2,18 +2,133 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>التذاكر - مُجيب AI</title>
-  <link rel="stylesheet" href="styles/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>قائمة التذاكر - مُجيب AI</title>
+  <style>
+    body {
+      background-color: #f4f6fc;
+      font-family: Tahoma, sans-serif;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #052e74;
+      margin-bottom: 30px;
+    }
+    .ticket {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+    }
+    .ticket strong {
+      color: #052e74;
+      font-size: 16px;
+    }
+    .ticket p {
+      margin: 5px 0 0;
+      color: #555;
+    }
+    .note {
+      text-align: center;
+      margin-top: 40px;
+      color: #999;
+      font-size: 14px;
+    }
+    .add-ticket {
+      background-color: #052e74;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+    }
+    select, input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>قائمة التذاكر</h2>
-    <ul>
-      <li>📩 من: أحمد - "هل الصوت يمكن تغييره؟"</li>
-      <li>📩 من: سارة - "ما وصلتني التذكرة على الإيميل!"</li>
-      <li>📩 من: يوسف - "أبي سيناريو مخصص للرد"</li>
-    </ul>
-    <p>🚧 جاري ربط التذاكر الحقيقية من Formspree أو Google Sheet</p>
-  </div>
+  <h2>قائمة التذاكر</h2>
+
+  <div id="ticketsList"></div>
+
+  <h3>➕ إضافة تذكرة جديدة</h3>
+  <select id="clientSelect"></select>
+  <input type="text" id="ticketMessage" placeholder="اكتب محتوى التذكرة..." />
+  <button class="add-ticket" onclick="addTicket()">إضافة تذكرة</button>
+
+  <div class="note" id="note"></div>
+
+  <script>
+    const clients = JSON.parse(localStorage.getItem("clients")) || [];
+    const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+
+    function renderClients() {
+      const select = document.getElementById("clientSelect");
+      select.innerHTML = "";
+      if (clients.length === 0) {
+        select.innerHTML = "<option>لا يوجد عملاء</option>";
+        select.disabled = true;
+        document.getElementById("note").textContent = "🚫 لا يمكنك إضافة تذاكر بدون عملاء.";
+      } else {
+        clients.forEach(client => {
+          const option = document.createElement("option");
+          option.value = client.id;
+          option.textContent = client.name;
+          select.appendChild(option);
+        });
+      }
+    }
+
+    function renderTickets() {
+      const list = document.getElementById("ticketsList");
+      list.innerHTML = "";
+      if (tickets.length === 0) {
+        list.innerHTML = "<div class='note'>لا توجد تذاكر حاليًا</div>";
+      } else {
+        tickets.forEach(ticket => {
+          const client = clients.find(c => c.id === ticket.clientId);
+          const div = document.createElement("div");
+          div.className = "ticket";
+          div.innerHTML = `<strong>📩 من: ${client ? client.name : "مجهول"}</strong><p>"${ticket.message}"</p>`;
+          list.appendChild(div);
+        });
+      }
+    }
+
+    function addTicket() {
+      const clientId = parseInt(document.getElementById("clientSelect").value);
+      const message = document.getElementById("ticketMessage").value.trim();
+
+      if (!message || isNaN(clientId)) {
+        alert("يرجى كتابة الرسالة واختيار عميل.");
+        return;
+      }
+
+      const newTicket = {
+        id: Date.now(),
+        clientId: clientId,
+        message: message
+      };
+
+      tickets.push(newTicket);
+      localStorage.setItem("tickets", JSON.stringify(tickets));
+      document.getElementById("ticketMessage").value = "";
+      renderTickets();
+    }
+
+    renderClients();
+    renderTickets();
+  </script>
 </body>
 </html>
