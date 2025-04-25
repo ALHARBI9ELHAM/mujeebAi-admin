@@ -117,26 +117,30 @@
     }
 
     function addTicket() {
-      const clientId = parseInt(document.getElementById("clientSelect").value);
-      const messageInput = document.getElementById("ticketMessage");
-      const message = messageInput.value.trim();
+      setTimeout(() => {
+        const clientId = parseInt(document.getElementById("clientSelect").value);
+        const messageInput = document.getElementById("ticketMessage");
+        const message = messageInput.value.trim();
 
-      if (!message || isNaN(clientId)) {
-        alert("يرجى كتابة الرسالة واختيار عميل.");
-        messageInput.focus();
-        return;
-      }
+        if (!message || isNaN(clientId)) {
+          alert("يرجى كتابة الرسالة واختيار عميل.");
+          messageInput.focus();
+          return;
+        }
 
-      const newTicket = {
-        id: Date.now(),
-        clientId: clientId,
-        message: message
-      };
+        const newTicket = {
+          id: Date.now(),
+          clientId: clientId,
+          message: message
+        };
 
-      tickets.push(newTicket);
-      localStorage.setItem("tickets", JSON.stringify(tickets));
-      messageInput.value = "";
-      renderTickets();
+        const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+        tickets.push(newTicket);
+        localStorage.setItem("tickets", JSON.stringify(tickets));
+
+        messageInput.value = "";
+        renderTickets();
+      }, 50); // حل مشكلة القراءة في الجوال
     }
 
     renderClients();
