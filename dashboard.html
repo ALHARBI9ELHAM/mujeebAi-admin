@@ -5,13 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم - مُجيب AI</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="styles/style.css">
   <style>
     body {
       margin: 0;
       font-family: Tahoma, sans-serif;
       background-color: #f4f6fc;
       display: flex;
+      flex-direction: row;
+    }
+    .menu-toggle {
+      display: none;
+      background-color: #052e74;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      width: 100%;
+      text-align: right;
     }
     .sidebar {
       width: 220px;
@@ -81,22 +91,20 @@
       body {
         flex-direction: column;
       }
+      .menu-toggle {
+        display: block;
+      }
       .sidebar {
+        display: none;
         width: 100%;
         height: auto;
-        display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        padding: 10px;
       }
-      .sidebar h2 {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .sidebar a {
-        margin: 10px;
-        font-size: 14px;
+      .sidebar.open {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
       .main {
         padding: 20px;
@@ -114,7 +122,8 @@
   </style>
 </head>
 <body>
-  <div class="sidebar">
+  <button class="menu-toggle" onclick="toggleSidebar()">≡ القائمة</button>
+  <div class="sidebar" id="sidebar">
     <h2>💼 مُجيب AI</h2>
     <a href="dashboard.html" class="active">📊 لوحة التحكم</a>
     <a href="clients.html">👥 إدارة العملاء</a>
@@ -156,6 +165,10 @@
   </div>
 
   <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("open");
+    }
+
     function logout() {
       localStorage.removeItem("loggedIn");
       window.location.href = "index.html";
