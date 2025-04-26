@@ -40,7 +40,7 @@
       margin-bottom: 20px;
     }
 
-    input, #searchInput {
+    input, textarea, #searchInput {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
@@ -63,19 +63,23 @@
     .btn-remind { background: #f1c40f; color: white; }
 
     .client-item {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .client-name {
       font-weight: bold;
       font-size: 18px;
+      margin-bottom: 5px;
     }
 
-    .client-date, .client-status {
+    .client-date, .client-status, .client-note, .client-tickets {
       font-size: 14px;
       color: #666;
+      margin: 3px 0;
     }
 
     .alert {
@@ -96,12 +100,13 @@
     <div class="add-box">
       <h2>➕ إضافة عميل جديد</h2>
       <input type="text" id="clientName" placeholder="اسم العميل" />
+      <textarea id="clientNote" placeholder="ملاحظة (اختياري)"></textarea>
       <button onclick="addClient()" style="width: 100%; background-color:#052e74; color:white;">إضافة</button>
     </div>
 
     <div class="list-box">
       <h2>📋 قائمة العملاء</h2>
-      <input type="text" id="searchInput" placeholder="🔍 ابحث عن عميل..." oninput="loadClients()" />
+      <input type="text" id="searchInput" placeholder="🔍 ابحث عن اسم أو حالة..." oninput="loadClients()" />
       <div id="clientList"></div>
     </div>
   </div>
@@ -127,29 +132,39 @@
 
     function loadClients() {
       const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      const container = document.getElementById("clientList");
+      const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
       const search = document.getElementById("searchInput").value.toLowerCase();
+      const container = document.getElementById("clientList");
       container.innerHTML = "";
 
-      clients.filter(client => client.name.toLowerCase().includes(search))
-        .forEach((client, index) => {
-          const div = document.createElement("div");
-          div.className = "client-item";
-          div.innerHTML = `
-            <div class="client-name">${client.name}</div>
-            <div class="client-date">📅 ${timeSince(client.date)}</div>
-            <div class="client-status">الحالة: <span style="color:${client.active ? 'green' : 'red'}">${client.active ? 'فعال' : 'غير فعال'}</span></div>
-            <button class="btn-view" onclick="viewClient(${index})">👁 عرض</button>
-            <button class="btn-toggle" onclick="toggleStatus(${index})">${client.active ? "إيقاف" : "تفعيل"}</button>
-            <button class="btn-remind" onclick="sendReminder(${index})">⚠️ تنبيه</button>
-            <button class="btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
-          `;
-          container.appendChild(div);
-        });
+      clients.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      clients.filter(client =>
+        client.name.toLowerCase().includes(search) ||
+        (client.active ? 'فعال' : 'غير فعال').includes(search)
+      ).forEach((client, index) => {
+        const clientTickets = tickets.filter(t => t.clientId == client.id);
+
+        const div = document.createElement("div");
+        div.className = "client-item";
+        div.innerHTML = `
+          <div class="client-name">${client.name}</div>
+          <div class="client-date">📅 ${timeSince(client.date)}</div>
+          <div class="client-status">الحالة: <span style="color:${client.active ? 'green' : 'red'}">${client.active ? 'فعال' : 'غير فعال'}</span></div>
+          <div class="client-tickets">عدد التذاكر: ${clientTickets.length}</div>
+          <div class="client-note">${client.note ? "📝 ملاحظة: " + client.note : ""}</div>
+          <button class="btn-view" onclick="viewClient(${index})">👁 عرض</button>
+          <button class="btn-toggle" onclick="toggleStatus(${index})">${client.active ? "إيقاف" : "تفعيل"}</button>
+          <button class="btn-remind" onclick="sendReminder(${index})">⚠️ تنبيه</button>
+          <button class="btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
+        `;
+        container.appendChild(div);
+      });
     }
 
     function addClient() {
       const name = document.getElementById("clientName").value.trim();
+      const note = document.getElementById("clientNote").value.trim();
       if (!name) return showAlert("❗️ اكتب اسم العميل");
 
       const clients = JSON.parse(localStorage.getItem("clients")) || [];
@@ -157,12 +172,14 @@
       const newClient = {
         id,
         name,
+        note,
         active: true,
         date: new Date().toISOString()
       };
       clients.push(newClient);
       localStorage.setItem("clients", JSON.stringify(clients));
       document.getElementById("clientName").value = "";
+      document.getElementById("clientNote").value = "";
       loadClients();
       showAlert("✅ تم إضافة العميل بنجاح");
     }
@@ -197,10 +214,11 @@
     function viewClient(index) {
       const clients = JSON.parse(localStorage.getItem("clients")) || [];
       const id = clients[index].id;
-      window.location.href = `clients/${id}/index.html`;
+      window.location.href = `client.html?id=${id}`;
     }
 
     loadClients();
   </script>
+
 </body>
 </html>
