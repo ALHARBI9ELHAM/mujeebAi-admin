@@ -4,221 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>قائمة العملاء - مُجيب AI</title>
-  <style>
-    body {
-      background-color: #f4f6fc;
-      font-family: Tahoma;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      display: flex;
-      gap: 40px;
-      width: 100%;
-      max-width: 1200px;
-    }
-
-    .add-box, .list-box {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-
-    .add-box {
-      width: 300px;
-    }
-
-    .list-box {
-      flex: 1;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input, textarea, #searchInput {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: right;
-    }
-
-    button {
-      padding: 8px 12px;
-      margin: 5px 0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-view { background: #052e74; color: white; }
-    .btn-delete { background: #e74c3c; color: white; }
-    .btn-toggle { background: #27ae60; color: white; }
-    .btn-remind { background: #f1c40f; color: white; }
-
-    .client-item {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-
-    .client-name {
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 5px;
-    }
-
-    .client-date, .client-status, .client-note, .client-tickets {
-      font-size: 14px;
-      color: #666;
-      margin: 3px 0;
-    }
-
-    .alert {
-      background: #27ae60;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="public/styles/style.css">
 </head>
 <body>
 
-  <div class="alert" id="alertBox"></div>
+<div class="sidebar">
+  <h2>💼 مُجيب AI</h2>
+  <a href="dashboard.html">📊 لوحة التحكم</a>
+  <a href="clients.html" class="active">👥 إدارة العملاء</a>
+  <a href="tickets.html">🎫 إدارة التذاكر</a>
+  <a href="users.html">👤 إدارة المستخدمين</a>
+  <a href="investor.html">💰 المستثمرين</a>
+  <a href="index.html">🏠 العودة للواجهة الرئيسية</a>
+</div>
 
-  <div class="container">
-    <div class="add-box">
-      <h2>➕ إضافة عميل جديد</h2>
-      <input type="text" id="clientName" placeholder="اسم العميل" />
-      <textarea id="clientNote" placeholder="ملاحظة (اختياري)"></textarea>
-      <button onclick="addClient()" style="width: 100%; background-color:#052e74; color:white;">إضافة</button>
-    </div>
+<div class="main">
+  <h2>📋 العملاء</h2>
 
-    <div class="list-box">
-      <h2>📋 قائمة العملاء</h2>
-      <input type="text" id="searchInput" placeholder="🔍 ابحث عن اسم أو حالة..." oninput="loadClients()" />
-      <div id="clientList"></div>
-    </div>
+  <div>
+    <input id="searchInput" placeholder="🔍 ابحث عن عميل..." oninput="loadClients()" style="margin-bottom:10px; width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
+    <div id="clientList"></div>
   </div>
+</div>
 
-  <script>
-    function showAlert(message) {
-      const alertBox = document.getElementById("alertBox");
-      alertBox.textContent = message;
-      alertBox.style.display = "block";
-      setTimeout(() => alertBox.style.display = "none", 2000);
-    }
+<script>
+  function loadClients() {
+    const clients = JSON.parse(localStorage.getItem("clients")) || [];
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const container = document.getElementById("clientList");
+    container.innerHTML = "";
 
-    function timeSince(date) {
-      const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-      let interval = seconds / 86400;
-      if (interval > 1) return `منذ ${Math.floor(interval)} يوم`;
-      interval = seconds / 3600;
-      if (interval > 1) return `منذ ${Math.floor(interval)} ساعة`;
-      interval = seconds / 60;
-      if (interval > 1) return `منذ ${Math.floor(interval)} دقيقة`;
-      return "الآن";
-    }
-
-    function loadClients() {
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
-      const search = document.getElementById("searchInput").value.toLowerCase();
-      const container = document.getElementById("clientList");
-      container.innerHTML = "";
-
-      clients.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      clients.filter(client =>
-        client.name.toLowerCase().includes(search) ||
-        (client.active ? 'فعال' : 'غير فعال').includes(search)
-      ).forEach((client, index) => {
-        const clientTickets = tickets.filter(t => t.clientId == client.id);
-
+    clients
+      .filter(client => client.name.toLowerCase().includes(search))
+      .forEach((client, index) => {
         const div = document.createElement("div");
         div.className = "client-item";
         div.innerHTML = `
-          <div class="client-name">${client.name}</div>
-          <div class="client-date">📅 ${timeSince(client.date)}</div>
-          <div class="client-status">الحالة: <span style="color:${client.active ? 'green' : 'red'}">${client.active ? 'فعال' : 'غير فعال'}</span></div>
-          <div class="client-tickets">عدد التذاكر: ${clientTickets.length}</div>
-          <div class="client-note">${client.note ? "📝 ملاحظة: " + client.note : ""}</div>
-          <button class="btn-view" onclick="viewClient(${index})">👁 عرض</button>
-          <button class="btn-toggle" onclick="toggleStatus(${index})">${client.active ? "إيقاف" : "تفعيل"}</button>
-          <button class="btn-remind" onclick="sendReminder(${index})">⚠️ تنبيه</button>
-          <button class="btn-delete" onclick="deleteClient(${index})">🗑 حذف</button>
+          <h4>${client.name}</h4>
+          <p>📅 ${new Date(client.date).toLocaleDateString()}</p>
+          <p>الحالة: ${client.active ? "فعال" : "غير فعال"}</p>
+          <button onclick="viewClient('${client.id}')">👁 عرض التفاصيل</button>
         `;
         container.appendChild(div);
       });
-    }
+  }
 
-    function addClient() {
-      const name = document.getElementById("clientName").value.trim();
-      const note = document.getElementById("clientNote").value.trim();
-      if (!name) return showAlert("❗️ اكتب اسم العميل");
+  function viewClient(id) {
+    window.location.href = `clients/${id}/index.html`;
+  }
 
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      const id = "client-" + Date.now();
-      const newClient = {
-        id,
-        name,
-        note,
-        active: true,
-        date: new Date().toISOString()
-      };
-      clients.push(newClient);
-      localStorage.setItem("clients", JSON.stringify(clients));
-      document.getElementById("clientName").value = "";
-      document.getElementById("clientNote").value = "";
-      loadClients();
-      showAlert("✅ تم إضافة العميل بنجاح");
-    }
-
-    function deleteClient(index) {
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
-
-      if (confirm(`⚠️ هل أنت متأكد من حذف العميل ${clients[index].name} وجميع تذاكره؟`)) {
-        const clientId = clients[index].id;
-        const updatedTickets = tickets.filter(t => t.clientId != clientId);
-        localStorage.setItem("tickets", JSON.stringify(updatedTickets));
-        clients.splice(index, 1);
-        localStorage.setItem("clients", JSON.stringify(clients));
-        loadClients();
-        showAlert("🗑 تم حذف العميل وتذاكره");
-      }
-    }
-
-    function toggleStatus(index) {
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      clients[index].active = !clients[index].active;
-      localStorage.setItem("clients", JSON.stringify(clients));
-      loadClients();
-    }
-
-    function sendReminder(index) {
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      showAlert(`🚨 تم إرسال تنبيه للعميل: ${clients[index].name}`);
-    }
-
-    function viewClient(index) {
-      const clients = JSON.parse(localStorage.getItem("clients")) || [];
-      const id = clients[index].id;
-      window.location.href = `client.html?id=${id}`;
-    }
-
-    loadClients();
-  </script>
+  loadClients();
+</script>
 
 </body>
 </html>
