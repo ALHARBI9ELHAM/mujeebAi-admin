@@ -4,81 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم - مُجيب AI</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: Tahoma, sans-serif;
-      background-color: #f4f6fc;
-      display: flex;
-    }
-    .sidebar {
-      width: 240px;
-      background-color: #052e74;
-      height: 100vh;
-      color: white;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      font-size: 20px;
-      margin-bottom: 30px;
-    }
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-    .sidebar a:hover, .sidebar a.active {
-      text-decoration: underline;
-    }
-    .main {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    .header h2 {
-      margin: 0;
-      color: #052e74;
-    }
-    .header .user-info {
-      font-size: 16px;
-      color: #555;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .charts {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    canvas {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      height: 250px !important;
-    }
-  </style>
+  <link rel="stylesheet" href="public/styles/style.css">
 </head>
 <body>
 
@@ -87,17 +14,15 @@
     <a href="dashboard.html" class="active">📊 لوحة التحكم</a>
     <a href="clients.html">👥 إدارة العملاء</a>
     <a href="tickets.html">🎫 إدارة التذاكر</a>
-    <a href="#">💳 المالية والاشتراكات</a>
-    <a href="content.html">🖋 إدارة المحتوى</a>
     <a href="users.html">👤 إدارة المستخدمين</a>
-    <a href="investor.html">💰 للمستثمرين</a>
+    <a href="investor.html">💰 المستثمرين</a>
     <a href="index.html">🏠 العودة للواجهة الرئيسية</a>
   </div>
 
   <div class="main">
     <div class="header">
       <h2>لوحة التحكم</h2>
-      <div class="user-info" id="userInfo">مرحبًا ...</div>
+      <div id="userInfo">مرحبًا ...</div>
     </div>
 
     <div class="cards">
@@ -125,12 +50,11 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // بيانات تسجيل المشرف من الجلسة
   const loggedUser = JSON.parse(sessionStorage.getItem("loggedUser")) || { name: "غير معروف", role: "مستخدم" };
   document.getElementById("userInfo").textContent = `مرحبًا ${loggedUser.name} (${loggedUser.role})`;
 
-  // بيانات العملاء والتذاكر
   const clients = JSON.parse(localStorage.getItem("clients")) || [];
   const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
 
@@ -144,7 +68,6 @@
   document.getElementById("totalTickets").textContent = tickets.length;
   document.getElementById("todayTickets").textContent = todayTickets;
 
-  // رسم البياني للعملاء (Pie)
   new Chart(document.getElementById('pieChart'), {
     type: 'pie',
     data: {
@@ -162,7 +85,6 @@
     }
   });
 
-  // رسم بياني التذاكر للأسبوع (Bar)
   const weekLabels = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
   const weekData = Array(7).fill(0);
   tickets.forEach(t => {
