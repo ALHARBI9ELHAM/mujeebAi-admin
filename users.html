@@ -2,110 +2,66 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>إدارة المستخدمين - مُجيب AI</title>
-  <link rel="stylesheet" href="styles/style.css" />
-  <style>
-    body {
-      font-family: Tahoma, sans-serif;
-      background-color: #f4f6fc;
-      padding: 40px;
-      text-align: center;
-    }
-    .user-box {
-      background: white;
-      max-width: 500px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: right;
-    }
-    button {
-      background-color: #052e74;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      text-align: right;
-    }
-    li {
-      padding: 5px;
-      border-bottom: 1px solid #eee;
-    }
-  </style>
+  <link rel="stylesheet" href="public/styles/style.css">
 </head>
 <body>
-  <div class="user-box">
-    <h2>إدارة المستخدمين</h2>
-    
-    <div>
-      <input type="text" id="newUsername" placeholder="اسم المستخدم الجديد" />
-      <input type="password" id="newPassword" placeholder="كلمة المرور" />
-      <button onclick="addUser()">إضافة مستخدم</button>
-    </div>
 
-    <h3>المستخدمون الحاليون</h3>
-    <ul id="userList"></ul>
-  </div>
+<div class="sidebar">
+  <h2>💼 مُجيب AI</h2>
+  <a href="dashboard.html">📊 لوحة التحكم</a>
+  <a href="clients.html">👥 إدارة العملاء</a>
+  <a href="tickets.html">🎫 إدارة التذاكر</a>
+  <a href="users.html" class="active">👤 إدارة المستخدمين</a>
+  <a href="investor.html">💰 المستثمرين</a>
+  <a href="index.html">🏠 العودة للواجهة الرئيسية</a>
+</div>
 
-  <script>
-    function getUsers() {
-      return JSON.parse(localStorage.getItem("users")) || [];
-    }
+<div class="main">
+  <h2>👤 إدارة المستخدمين</h2>
 
-    function saveUsers(users) {
-      localStorage.setItem("users", JSON.stringify(users));
-    }
+  <input type="text" id="newUsername" placeholder="اسم المستخدم" />
+  <input type="password" id="newPassword" placeholder="كلمة المرور" />
+  <button onclick="addUser()">➕ إضافة مستخدم</button>
 
-    function renderUsers() {
-      const users = getUsers();
-      const list = document.getElementById("userList");
-      list.innerHTML = "";
+  <h3>المستخدمون الحاليون:</h3>
+  <ul id="userList"></ul>
+</div>
 
-      if (users.length === 0) {
-        list.innerHTML = "<li>لا يوجد مستخدمين.</li>";
-        return;
-      }
+<script>
+  function getUsers() {
+    return JSON.parse(localStorage.getItem("users")) || [];
+  }
 
-      users.forEach((user, index) => {
-        const li = document.createElement("li");
-        li.textContent = `👤 ${user.username}`;
-        list.appendChild(li);
-      });
-    }
+  function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+  }
 
-    function addUser() {
-      const username = document.getElementById("newUsername").value.trim();
-      const password = document.getElementById("newPassword").value.trim();
-      if (!username || !password) return alert("يرجى تعبئة الحقول");
+  function renderUsers() {
+    const users = getUsers();
+    const list = document.getElementById("userList");
+    list.innerHTML = "";
+    users.forEach(user => {
+      const li = document.createElement("li");
+      li.textContent = user.username;
+      list.appendChild(li);
+    });
+  }
 
-      const users = getUsers();
-      if (users.find(u => u.username === username)) {
-        alert("اسم المستخدم موجود مسبقًا");
-        return;
-      }
+  function addUser() {
+    const username = document.getElementById("newUsername").value.trim();
+    const password = document.getElementById("newPassword").value.trim();
+    if (!username || !password) return alert("املأ الحقول");
 
-      users.push({ username, password });
-      saveUsers(users);
-      renderUsers();
-      document.getElementById("newUsername").value = "";
-      document.getElementById("newPassword").value = "";
-    }
-
+    const users = getUsers();
+    users.push({ username, password });
+    saveUsers(users);
     renderUsers();
-  </script>
+  }
+
+  renderUsers();
+</script>
+
 </body>
 </html>
