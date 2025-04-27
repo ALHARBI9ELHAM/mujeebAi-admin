@@ -3,225 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>التذاكر - مُجيب AI</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Tahoma, sans-serif;
-      background-color: #f4f6fc;
-      display: flex;
-    }
-
-    .sidebar {
-      width: 240px;
-      background-color: #052e74;
-      color: white;
-      padding: 20px;
-      height: 100vh;
-      box-sizing: border-box;
-    }
-
-    .sidebar h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .sidebar button {
-      width: 100%;
-      background-color: white;
-      color: #052e74;
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .main {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
-
-    h3 {
-      color: #052e74;
-      margin-top: 0;
-    }
-
-    .ticket {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
-    }
-
-    .ticket strong {
-      color: #052e74;
-    }
-
-    .ticket p {
-      margin: 5px 0 5px;
-      color: #333;
-    }
-
-    .ticket small {
-      color: #777;
-      font-size: 13px;
-    }
-
-    .form-section {
-      margin-top: 30px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-    }
-
-    select {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    .form-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .form-buttons button {
-      flex: 1;
-    }
-  </style>
+  <title>إدارة التذاكر - مُجيب AI</title>
+  <link rel="stylesheet" href="public/styles/style.css">
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>قائمة التذاكر</h2>
-    <button onclick="scrollToForm()">➕ إضافة تذكرة</button>
-    <button onclick="renderTickets()">📋 عرض الكل</button>
-    <button onclick="filterByStatus('مفتوحة')">✅ المفتوحة</button>
-    <button onclick="filterByStatus('مغلقة')">❌ المغلقة</button>
-    <button onclick="filterByStatus('تحت المعالجة')">⌛ تحت المعالجة</button>
-    <button onclick="goToDashboard()">🏠 العودة للوحة التحكم</button>
-  </div>
+<div class="sidebar">
+  <h2>💼 مُجيب AI</h2>
+  <a href="dashboard.html">📊 لوحة التحكم</a>
+  <a href="clients.html">👥 إدارة العملاء</a>
+  <a href="tickets.html" class="active">🎫 إدارة التذاكر</a>
+  <a href="users.html">👤 إدارة المستخدمين</a>
+  <a href="investor.html">💰 المستثمرين</a>
+  <a href="index.html">🏠 العودة للواجهة الرئيسية</a>
+</div>
 
-  <div class="main">
-    <h3>قائمة التذاكر</h3>
-    <div id="ticketsList"></div>
+<div class="main">
+  <h2>🎫 التذاكر</h2>
 
-    <div id="form" class="form-section">
-      <h3>➕ إضافة تذكرة جديدة</h3>
-      <select id="clientSelect">
-        <option value="">-- اختر عميل --</option>
-      </select>
-      <select id="ticketStatus">
-        <option value="مفتوحة">مفتوحة</option>
-        <option value="تحت المعالجة">تحت المعالجة</option>
-        <option value="مغلقة">مغلقة</option>
-      </select>
-      <div class="form-buttons">
-        <button onclick="addTicket()">إضافة</button>
-        <button onclick="clearForm()" style="background-color: #aaa;">إلغاء</button>
-      </div>
-    </div>
-  </div>
+  <div id="ticketList"></div>
+</div>
 
-  <script>
+<script>
+  function loadTickets() {
+    const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
     const clients = JSON.parse(localStorage.getItem("clients")) || [];
-    let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+    const container = document.getElementById("ticketList");
+    container.innerHTML = "";
 
-    function scrollToForm() {
-      document.getElementById("form").scrollIntoView({ behavior: 'smooth' });
+    if (tickets.length === 0) {
+      container.innerHTML = "<p>لا توجد تذاكر.</p>";
+      return;
     }
 
-    function goToDashboard() {
-      window.location.href = "dashboard.html";
-    }
+    tickets.forEach(ticket => {
+      const client = clients.find(c => c.id == ticket.clientId) || { name: "غير معروف" };
+      const div = document.createElement("div");
+      div.className = "ticket";
+      div.innerHTML = `
+        <h4>📩 ${client.name}</h4>
+        <p>الحالة: ${ticket.status}</p>
+        <p>📅 ${new Date(ticket.date).toLocaleDateString()}</p>
+      `;
+      container.appendChild(div);
+    });
+  }
 
-    function renderClients() {
-      const select = document.getElementById("clientSelect");
-      select.innerHTML = "<option value=''>-- اختر عميل --</option>";
-      if (clients.length === 0) {
-        select.innerHTML += "<option>لا يوجد عملاء</option>";
-        select.disabled = true;
-      } else {
-        clients.forEach(client => {
-          const option = document.createElement("option");
-          option.value = client.id;
-          option.textContent = client.name;
-          select.appendChild(option);
-        });
-      }
-    }
+  loadTickets();
+</script>
 
-    function renderTickets(statusFilter = null) {
-      const list = document.getElementById("ticketsList");
-      list.innerHTML = "";
-
-      const filteredTickets = statusFilter 
-        ? tickets.filter(ticket => ticket.status === statusFilter)
-        : tickets;
-
-      if (filteredTickets.length === 0) {
-        list.innerHTML = "<div class='note'>لا توجد تذاكر حاليًا</div>";
-      } else {
-        filteredTickets.forEach(ticket => {
-          const client = clients.find(c => c.id == ticket.clientId);
-          const div = document.createElement("div");
-          div.className = "ticket";
-          div.innerHTML = `
-            <strong>📩 ${client ? client.name : "مجهول"}</strong>
-            <p>العميل طلب الاتصال به</p>
-            <small>📝 الحالة: ${ticket.status}</small>
-          `;
-          list.appendChild(div);
-        });
-      }
-    }
-
-    function filterByStatus(status) {
-      renderTickets(status);
-    }
-
-    function addTicket() {
-      const clientId = document.getElementById("clientSelect").value;
-      const status = document.getElementById("ticketStatus").value;
-      const message = "العميل طلب الاتصال به";
-
-      if (!clientId) {
-        alert("يرجى اختيار عميل.");
-        return;
-      }
-
-      const newTicket = {
-        id: Date.now(),
-        clientId: parseInt(clientId),
-        message: message,
-        status: status
-      };
-
-      tickets.push(newTicket);
-      localStorage.setItem("tickets", JSON.stringify(tickets));
-      clearForm();
-      renderTickets();
-      scrollToTop();
-    }
-
-    function clearForm() {
-      document.getElementById("clientSelect").selectedIndex = 0;
-      document.getElementById("ticketStatus").selectedIndex = 0;
-    }
-
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    renderClients();
-    renderTickets();
-  </script>
 </body>
 </html>
