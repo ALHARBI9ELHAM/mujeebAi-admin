@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تكامل المتاجر</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script>
+    async function load(){
+      const res = await fetch('../api/clients');
+      const clients = await res.json();
+      const tbl = document.getElementById('tbl');
+      for(const c of clients){
+        try{
+          const data = await (await fetch(`../clients/${c}/integration.json`)).json();
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${c}</td><td>${data.storeType}</td><td>${data.plan}</td>`;
+          tbl.appendChild(tr);
+        }catch(e){continue;}
+      }
+    }
+    window.onload=load;
+  </script>
+</head>
+<body>
+  <header class="hero"><h1>التكاملات</h1></header>
+  <section class="section">
+    <table style="width:100%; background:#fff;">
+      <thead><tr><th>المتجر</th><th>النوع</th><th>الباقة</th></tr></thead>
+      <tbody id="tbl"></tbody>
+    </table>
+  </section>
+  <footer>&copy; 2025 مُجيب AI</footer>
+</body>
+</html>

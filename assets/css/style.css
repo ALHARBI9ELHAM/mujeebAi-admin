@@ -1,0 +1,24 @@
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: #f4f6fc;
+  color: #052e74;
+  margin: 0;
+}
+header.hero {
+  background: linear-gradient(to left, #052e74, #0c3f99);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+}
+.btn-primary {
+  background-color: #052e74;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  border: none;
+  display: inline-block;
+  text-decoration: none;
+  margin: 5px;
+}
+.section { padding: 60px 20px; }
+footer { background-color: #052e74; color: white; text-align: center; padding: 20px; }
